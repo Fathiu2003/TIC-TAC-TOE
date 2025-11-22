@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tic-Tac-Toe NG</title>
+  <meta name="theme-color" content="#008751">
+  <meta name="description" content="Naija Tic-Tac-Toe: AI, Custom Music, Win Cash!">
+  
+  <!-- PWA Icons -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>Nigeria</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>Nigeria</text></svg>">
+  <link rel="manifest" href="data:application/manifest+json,ewogICJuYW1lIjogIlRpYy1UYWMtVG9lIE5HIiwKICAic2hvcnRfbmFtZSI6ICJUaWNUIE5HIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwMDg3NTEiLAogICJ0aGVtZV9jb2xvciI6ICIjMDA4NzUxIiwKICAiaWNvbnMiOiBbCiAgICB7InNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWwsJTNDc3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zyc+PHRleHQgeT0nLjklJyBmb250LXNpemU9JzkwJz7wn5qBPC90ZXh0Pjwvc3ZnPicifQogIF0KfQ==">
+
+  <!-- GOOGLE ADSENSE -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5789690341325708"
+    crossorigin="anonymous"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#008751,#fff,#ce1126);color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px;text-align:center}
+    .flag{font-size:2.5rem;margin:10px 0}h1{font-size:2rem;text-shadow:0 0 10px rgba(0,0,0,.3)}
+    .scores{background:rgba(0,0,0,.8);padding:15px 25px;border-radius:15px;margin-bottom:15px;box-shadow:0 0 15px rgba(255,255,255,.3);display:flex;justify-content:space-around;width:100%;max-width:400px}
+    .score-item{text-align:center}.score-label{font-size:.9rem;opacity:.8;margin-bottom:5px}.score-number{font-size:1.8rem;font-weight:bold}
+    .you{color:#ce1126}.ai{color:#008751}.draw{color:#ffd700}
+    .game{background:rgba(0,0,0,.75);padding:20px;border-radius:15px;box-shadow:0 0 20px rgba(0,255,0,.6);margin-top:20px;width:100%;max-width:400px}
+    .board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+    .cell{background:#fff;color:#000;font-size:2.5rem;font-weight:bold;height:90px;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;transition:all .3s;user-select:none}
+    .cell:hover{background:#f0f0f0;transform:scale(1.05)}.cell.x{color:#ce1126}.cell.o{color:#008751;animation:aiMove .4s ease}
+    @keyframes aiMove{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
+    .status{font-size:1.5rem;margin:15px 0;font-weight:bold}
+    button{background:#008751;color:#fff;border:none;padding:12px 25px;font-size:1.1rem;border-radius:50px;cursor:pointer;margin:5px;box-shadow:0 5px 15px rgba(0,0,0,.3);transition:.3s}
+    button:hover{background:#006d3f;transform:translateY(-2px)}#resetScores{background:#ce1126}#resetScores:hover{background:#a00d1f}
+    .difficulty,.controls{margin:15px 0;display:flex;justify-content:center;gap:10px;align-items:center;flex-wrap:wrap}
+    select, input{padding:8px 12px;font-size:1rem;border-radius:8px;border:none;background:#fff;color:#000}
+    .music-toggle{background:#ffd700;color:#000;font-weight:bold}
+    .file-input{display:none}
+    .choose-music{background:#ffd700;color:#000;padding:10px 15px;border-radius:8px;font-weight:bold;cursor:pointer}
+    .footer{margin-top:20px;font-size:.9rem;opacity:.9}
+    .footer strong{color:#ffd700}
+
+/* GUIDE SCREEN - NIGERIA PREMIUM BEAUTY */
+    .guide-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, #008751, #ce1126);
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      z-index: 9999; padding: 20px 15px; overflow-y: auto;
+      animation: fadeIn 0.7s ease;
+    }
+    .guide-content {
+      max-width: 90%; width: 100%; max-height: 68vh; overflow-y: auto;
+      background: rgba(0, 0, 0, 0.85); padding: 22px; border-radius: 22px;
+      border: 3px solid #ffd700; box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+      margin-bottom: 20px; backdrop-filter: blur(5px);
+    }
+    .guide-content::-webkit-scrollbar { width: 8px; }
+    .guide-content::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 4px; }
+    .guide-content::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+
+    .guide-item {
+      display: flex; align-items: center; margin: 14px 0; font-size: 1.05rem;
+      text-align: left; color: #fff; line-height: 1.5;
+    }
+    .guide-item .icon {
+      font-size: 1.6rem; margin-right: 14px; width: 36px; text-align: center;
+      filter: drop-shadow(0 0 3px #000);
+    }
+    .gold-line {
+      border: 1px solid #ffd700; margin: 16px 0; opacity: 0.7;
+    }
+    .gold-title {
+      color: #ffd700; font-size: 1.3rem; margin: 10px 0 8px; text-shadow: 0 0 8px #000;
+    }
+    .guide-btn {
+      background: #ce1126; color: #fff; padding: 15px 55px; font-size: 1.4rem;
+      border-radius: 50px; border: none; cursor: pointer;
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+      box-shadow: 0 6px 22px rgba(206,17,38,0.7); z-index: 99999;
+      animation: pulse 2s infinite; font-weight: bold;
+    }
+    @keyframes fadeIn { from {opacity: 0; transform: translateY(-10px)} to {opacity: 1; transform: translateY(0)} }
+    @keyframes pulse { 0%,100% {transform: translateX(-50%) scale(1)} 50% {transform: translateX(-50%) scale(1.07)} }
+
+    @media(max-width:480px){
+      .guide-content { padding: 18px; max-height: 64vh; }
+      .guide-item { font-size: 0.98rem; margin: 12px 0; }
+      .guide-item .icon { font-size: 1.5rem; }
+      .gold-title { font-size: 1.2rem; }
+      .guide-btn { padding: 13px 48px; font-size: 1.3rem; bottom: 25px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- GUIDE SCREEN - NIGERIA PREMIUM BEAUTY -->
+  <div id="guideScreen" class="guide-screen">
+    <div class="flag">Tic-Tac-Toe NG</div>
+
+    
+    <div class="guide-content">
+          <h1 class="gold-title">How to Play</h1>
+      <div class="guide-item"><span class="icon">🔀</span><p><strong>First Move:</strong> Random! You or AI</p></div>
+      <div class="guide-item"><span class="icon">👤🤖</span><p><strong>You = X (Red)</strong>, AI = O (Green)</p></div>
+      <div class="guide-item"><span class="icon">🚀</span><p><strong>Tap box</strong> to play</p></div>
+      <div class="guide-item"><span class="icon">🏆</span><p><strong>3 in a row = Win!</strong></p></div>
+      <div class="guide-item"><span class="icon">📺</span><p><strong>Ads show:</strong> Win, Lose, Draw, Start</p></div>
+      
+      <hr class="gold-line">
+      <h1 class="gold-title">Add Music</h1>
+      <div class="guide-item"><span class="icon">🔊</span><p>Tap <strong>Choose Music</strong></p></div>
+      <div class="guide-item"><span class="icon">🎶</span><p>Pick song from phone</p></div>
+      <div class="guide-item"><span class="icon">▶️</span><p>Tap <strong>Music ON</strong></p></div>
+      <div class="guide-item"><span class="icon">💾</span><p><em>Saves forever!</em></p></div>
+    </div>
+
+    <button id="startGameBtn" class="guide-btn">PLAY NOW!</button>
+  </div>
+
+  <!-- GAME UI -->
+  <div id="gameUI" style="display:none">
+    <div class="flag">Tic-Tac-Toe AI</div>
+    <h1>Player vs AI</h1>
+    <div class="scores">
+      <div class="score-item"><div class="score-label">You (X)</div><div class="score-number you" id="youScore">0</div></div>
+      <div class="score-item"><div class="score-label">Draws</div><div class="score-number draw" id="drawScore">0</div></div>
+      <div class="score-item"><div class="score-label">AI (O)</div><div class="score-number ai" id="aiScore">0</div></div>
+    </div>
+    <div class="game">
+      <div class="status" id="status">Your turn (X)</div>
+      <div class="difficulty">
+        <select id="difficulty"><option value="easy">Easy</option><option value="hard" selected>Hard</option></select>
+      </div>
+      <div class="controls">
+        <button id="musicToggle" class="music-toggle">Music ON</button>
+        <label class="choose-music">Choose Music
+          <input type="file" id="musicFile" class="file-input" accept="audio/*">
+        </label>
+      </div>
+      <div class="board" id="board">
+        <div class="cell" data-index="0"></div><div class="cell" data-index="1"></div><div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div><div class="cell" data-index="4"></div><div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div><div class="cell" data-index="7"></div><div class="cell" data-index="8"></div>
+      </div>
+      <button id="reset">New Game</button>
+      <button id="resetScores">Reset Scores</button>
+    </div>
+
+    <div class="ad-container" id="adContainer"></div>
+    <div class="footer">Powered by <strong>BIGFAT TECH SOLUTION</strong></div>
+  </div>
+
+  <!-- PWA Service Worker -->
+  <script>
+    if('serviceWorker' in navigator){
+      window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));
+    }
+  </script>
+
+  <!-- FULL LOGIC -->
+  <script>
+    let audioCtx, audioSource, audioElement;
+    let isMusicOn = localStorage.getItem('musicOn') === 'true';
+    let musicPlaying = false;
+    let audioUnlocked = false;
+    let currentSongUrl = null;
+    let adShownOnStart = false;
+
+    const AD_CLIENT = 'ca-pub-5789690341325708';
+    const AD_SLOT = '5595692209';
+
+    function showSmartAd() {
+      const container = document.getElementById('adContainer');
+      if (!container) return;
+      container.innerHTML = `<ins class="adsbygoogle" style="display:block" data-ad-client="${AD_CLIENT}" data-ad-slot="${AD_SLOT}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
+      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+    }
+
+    function shouldShowAd(result = null) {
+      if (result === null && !adShownOnStart) return true;
+      return true; // SHOW ON WIN, LOSE, DRAW
+    }
+
+    function triggerAdIfNeeded(winner) {
+      const result = winner === 'X' ? 'you' : winner === 'O' ? 'ai' : 'draw';
+      if (shouldShowAd(result)) setTimeout(showSmartAd, 800);
+    }
+
+    function showAdOnStart() {
+      if (shouldShowAd()) { setTimeout(showSmartAd, 1200); adShownOnStart = true; }
+    }
+
+    document.getElementById('startGameBtn').addEventListener('click', () => {
+      document.getElementById('guideScreen').style.display = 'none';
+      document.getElementById('gameUI').style.display = 'block';
+      unlockAudio();
+      startNewGame();
+    });
+
+    function unlockAudio() {
+      if (audioUnlocked) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      audioUnlocked = true;
+      loadSavedMusic();
+      showAdOnStart();
+    }
+
+    function loadSavedMusic() {
+      const request = indexedDB.open('tictactoe-music', 1);
+      request.onupgradeneeded = e => e.target.result.createObjectStore('songs');
+      request.onsuccess = e => {
+        const db = e.target.result;
+        const tx = db.transaction('songs', 'readonly');
+        const store = tx.objectStore('songs');
+        const get = store.get('current');
+        get.onsuccess = () => {
+          if (get.result && isMusicOn) {
+            currentSongUrl = get.result.url;
+            playCustomMusic(currentSongUrl);
+          }
+        };
+      };
+    }
+
+    function saveMusic(url) {
+      const request = indexedDB.open('tictactoe-music', 1);
+      request.onupgradeneeded = e => e.target.result.createObjectStore('songs');
+      request.onsuccess = e => {
+        const db = e.target.result;
+        const tx = db.transaction('songs', 'readwrite');
+        tx.objectStore('songs').put({ url }, 'current');
+      };
+    }
+
+    function playCustomMusic(url) {
+      if (!audioCtx || musicPlaying || !isMusicOn) return;
+      if (audioElement) audioElement.pause();
+      audioElement = new Audio(url);
+      audioElement.loop = true; audioElement.volume = 0.3;
+      audioSource = audioCtx.createMediaElementSource(audioElement);
+      audioSource.connect(audioCtx.destination);
+      audioElement.play().catch(() => {});
+      musicPlaying = true;
+    }
+
+    function stopCustomMusic() {
+      if (audioElement && musicPlaying) { audioElement.pause(); musicPlaying = false; }
+    }
+
+    document.getElementById('musicFile').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const url = ev.target.result;
+        currentSongUrl = url;
+        saveMusic(url);
+        if (isMusicOn) { stopCustomMusic(); playCustomMusic(url); }
+        alert('Music loaded! ' + file.name);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function playSound(freq, duration = 0.1, type = 'square') {
+      if (!audioCtx || !audioUnlocked) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type; osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function playMoveSound(player) { playSound(player === 'X' ? 600 : 800, 0.12); }
+    function playWinSound() { [900, 1100, 1300].forEach((f, i) => setTimeout(() => playSound(f, 0.2, 'triangle'), i * 150)); }
+    function playDrawSound() { [400, 300].forEach((f, i) => setTimeout(() => playSound(f, 0.3, 'sawtooth'), i * 200)); }
+
+    // GAME LOGIC
+    const cells = document.querySelectorAll('.cell');
+    const statusDisplay = document.getElementById('status');
+    const resetButton = document.getElementById('reset');
+    const resetScoresButton = document.getElementById('resetScores');
+    const difficultySelect = document.getElementById('difficulty');
+    const musicToggle = document.getElementById('musicToggle');
+    const youScoreEl = document.getElementById('youScore');
+    const aiScoreEl = document.getElementById('aiScore');
+    const drawScoreEl = document.getElementById('drawScore');
+
+    let scores = JSON.parse(localStorage.getItem('tictactoeScores')) || { you: 0, ai: 0, draws: 0 };
+    let gameBoard = ['', '', '', '', '', '', '', '', ''];
+    let gameActive = true;
+    let difficulty = 'hard';
+    const human = 'X', aiPlayer = 'O';
+    let currentPlayer = human;
+
+    const winningConditions = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+    function updateScoreDisplay() {
+      youScoreEl.textContent = scores.you;
+      aiScoreEl.textContent = scores.ai;
+      drawScoreEl.textContent = scores.draws;
+    }
+
+    function saveScores() { localStorage.setItem('tictactoeScores', JSON.stringify(scores)); }
+
+    function endGame(winner) {
+      gameActive = false;
+      let resultText = '';
+      if (winner === human) { resultText = 'You Win!'; playWinSound(); scores.you++; }
+      else if (winner === aiPlayer) { resultText = 'AI Wins!'; playWinSound(); scores.ai++; }
+      else { resultText = "It's a Draw!"; playDrawSound(); scores.draws++; }
+      statusDisplay.textContent = resultText;
+      updateScoreDisplay(); saveScores();
+      triggerAdIfNeeded(winner); // ADS ON DRAW TOO
+    }
+
+    function handleCellClick(e) {
+      const index = e.target.getAttribute('data-index');
+      if (gameBoard[index] !== '' || !gameActive || currentPlayer !== human) return;
+      makeMove(parseInt(index), human);
+      if (gameActive) setTimeout(aiMove, 500);
+    }
+
+    function makeMove(index, player) {
+      gameBoard[index] = player;
+      const cell = cells[index]; // FIXED: Use cells array
+      cell.textContent = player;
+      cell.classList.add(player.toLowerCase());
+      playMoveSound(player);
+
+      if (checkWin(player)) { endGame(player); return; }
+      if (gameBoard.every(c => c !== '')) { endGame('draw'); return; }
+
+      currentPlayer = player === human ? aiPlayer : human;
+      statusDisplay.textContent = currentPlayer === human ? 'Your turn (X)' : 'AI is thinking...';
+    }
+
+    function aiMove() {
+      if (!gameActive || currentPlayer !== aiPlayer) return;
+      const best = difficulty === 'easy' ? getRandomMove() : minimax(gameBoard, aiPlayer).index;
+      makeMove(best, aiPlayer);
+    }
+
+    function getRandomMove() {
+      const empty = gameBoard.map((v, i) => v === '' ? i : null).filter(v => v !== null);
+      return empty[Math.floor(Math.random() * empty.length)];
+    }
+
+    function checkWin(p) {
+      return winningConditions.some(c => c.every(i => gameBoard[i] === p));
+    }
+
+    function minimax(board, player) {
+      const spots = board.map((v, i) => v === '' ? i : null).filter(v => v !== null);
+      if (checkWin(human)) return { score: -10 };
+      if (checkWin(aiPlayer)) return { score: 10 };
+      if (spots.length === 0) return { score: 0 };
+      const moves = [];
+      for (let i of spots) {
+        board[i] = player;
+        const result = minimax(board, player === aiPlayer ? human : aiPlayer);
+        moves.push({ index: i, score: result.score });
+        board[i] = '';
+      }
+      return player === aiPlayer ?
+        moves.reduce((a, c) => c.score > a.score ? c : a) :
+        moves.reduce((a, c) => c.score < a.score ? c : a);
+    }
+
+    function startNewGame() {
+      gameBoard = ['', '', '', '', '', '', '', '', ''];
+      gameActive = true;
+      difficulty = difficultySelect.value;
+      currentPlayer = Math.random() < 0.5 ? human : aiPlayer;
+      statusDisplay.textContent = currentPlayer === human ? 'Your turn (X)' : 'AI starts (O)';
+      cells.forEach(c => { c.textContent = ''; c.classList.remove('x', 'o'); });
+      adShownOnStart = false;
+      showAdOnStart();
+      if (currentPlayer === aiPlayer) setTimeout(aiMove, 800);
+    }
+
+    function resetAllScores() {
+      if (confirm('Reset all scores?')) {
+        scores = { you: 0, ai: 0, draws: 0 };
+        updateScoreDisplay(); saveScores();
+      }
+    }
+
+    musicToggle.textContent = isMusicOn ? 'Music ON' : 'Music OFF';
+    musicToggle.onclick = () => {
+      isMusicOn = !isMusicOn;
+      localStorage.setItem('musicOn', isMusicOn);
+      musicToggle.textContent = isMusicOn ? 'Music ON' : 'Music OFF';
+      if (isMusicOn && currentSongUrl) playCustomMusic(currentSongUrl);
+      else stopCustomMusic();
+    };
+
+    cells.forEach(c => c.addEventListener('click', handleCellClick));
+    resetButton.addEventListener('click', startNewGame);
+    resetScoresButton.addEventListener('click', resetAllScores);
+    difficultySelect.addEventListener('change', () => difficulty = difficultySelect.value);
+
+    updateScoreDisplay();
+  </script>
+</body>
+  </html>
